@@ -6,6 +6,7 @@ if ($conn->connect_error) {
 }
 
 $message = "";
+$newPass = "";
 
 // Nếu người dùng submit form
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -19,15 +20,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Tạo mật khẩu mới ngẫu nhiên
         $newPass = substr(md5(time()), 0, 8);
 
-        // Cập nhật mật khẩu mới (chưa mã hóa, bạn nên dùng password_hash để an toàn)
-        $sqlUpdate = "UPDATE User SET password='$newPass' WHERE email='$email'";
+        // Cập nhật mật khẩu mới (mã hóa để an toàn)
+        $hashed = password_hash($newPass, PASSWORD_DEFAULT);
+        $sqlUpdate = "UPDATE User SET password='$hashed' WHERE email='$email'";
         if ($conn->query($sqlUpdate) === TRUE) {
-            $message = "Mật khẩu mới của bạn là: <b>$newPass</b>";
+            $message = "✅ Mật khẩu mới của bạn đã được tạo thành công!";
         } else {
-            $message = "Có lỗi khi cập nhật mật khẩu.";
+            $message = "❌ Có lỗi khi cập nhật mật khẩu.";
         }
     } else {
-        $message = "Email không tồn tại trong hệ thống!";
+        $message = "⚠️ Email không tồn tại trong hệ thống!";
     }
 }
 ?>
@@ -38,10 +40,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
-    <title>Quên mật khẩu</title>
+    <title>Quên Mật Khẩu</title>
     <style>
         * {
             margin: 0;
@@ -142,18 +142,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             font-size: 15px;
         }
 
-        .forgot {
-            display: block;
-            margin: 10px 0 20px;
-            font-size: 14px;
-            color: #003f91;
-            text-decoration: none;
-        }
-
-        .forgot:hover {
-            text-decoration: underline;
-        }
-
         .btn {
             width: 100%;
             padding: 12px;
@@ -167,31 +155,86 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             background: #003f91;
             color: #fff;
         }
+
+        .message {
+            margin-top: 15px;
+            font-size: 15px;
+            color: #003f91;
+            text-align: center;
+        }
+
+        .new-pass-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f1f1f1;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .new-pass-box code {
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .copy-btn {
+            margin-top: 10px;
+            padding: 8px 15px;
+            background: #003f91;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
+        <!-- Bên trái -->
         <div class="left">
             <h2 style="font-size: 48px;">Hello, Welcome!</h2>
             <p style="font-size: 24px;">Bạn chưa có tài khoản?</p>
             <button class="btn-outline" onclick="window.location.href='dangky.php'">Đăng Ký</button>
         </div>
+
+        <!-- Bên phải -->
         <div class="right">
             <div class="right-container">
-                <h2>Quên mật khẩu</h2>
-                <b>Nhập địa chỉ email để đặt lại mật khẩu</b>
-                <br><br>
+                <h2>Quên Mật Khẩu</h2>
+                <b>Nhập địa chỉ email để đặt lại mật khẩu</b><br><br>
                 <form action="" method="POST">
                     <div class="form-group">
                         <input type="email" name="email" placeholder="Email">
                     </div>
                     <button type="submit" class="btn btn-primary">Gửi</button>
                 </form>
-                 <?php if ($message != "") echo "<div class='message'>$message</div>"; ?>
+
+                <?php if (!empty($message)) : ?>
+                    <div class="message"><?= $message ?></div>
+                <?php endif; ?>
+
+                <?php if (!empty($newPass)) : ?>
+                    <div class="new-pass-box">
+                        <p>Mật khẩu mới của bạn:</p>
+                        <code id="newPass"><?= $newPass ?></code>
+                        <br>
+                        <button class="copy-btn" onclick="copyPass()">📋 Copy & Đăng nhập</button>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
+
+    <script>
+        function copyPass() {
+            let passText = document.getElementById("newPass").innerText;
+            navigator.clipboard.writeText(passText).then(() => {
+                alert("✅ Mật khẩu đã được copy. Chuyển đến trang đăng nhập...");
+                window.location.href = "dangnhap.php";
+            });
+        }
+    </script>
 </body>
 
 </html>
