@@ -1,32 +1,42 @@
 <?php
 // Kết nối CSDL
 include("csdl/db.php");
+include("src/func.php");
 
 $message = "";
 $newPass = "";
 
 // Nếu người dùng submit form
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = trim($_POST['email']);
+    $email = trim($_POST['email'] ?? "");
 
-    // Kiểm tra email trong bảng User
-    $sql = "SELECT * FROM User WHERE email='$email'";
-    $result = $conn->query($sql);
-
-    if ($result->num_rows > 0) {
-        // Tạo mật khẩu mới ngẫu nhiên
-        $newPass = substr(md5(time()), 0, 8);
-
-        // Cập nhật mật khẩu mới (mã hóa để an toàn)
-        $hashed = password_hash($newPass, PASSWORD_DEFAULT);
-        $sqlUpdate = "UPDATE User SET password='$hashed' WHERE email='$email'";
-        if ($conn->query($sqlUpdate) === TRUE) {
-            $message = "✅ Mật khẩu mới của bạn đã được tạo thành công!";
-        } else {
-            $message = "❌ Có lỗi khi cập nhật mật khẩu.";
-        }
+    if (isEmpty($email)) {
+        $message = "⚠️ Vui lòng nhập email!";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $message = "⚠️ Email không hợp lệ!";
     } else {
-        $message = "⚠️ Email không tồn tại trong hệ thống!";
+        // Kiểm tra email có tồn tại không
+        $user = getUserByEmail($email);
+
+        if ($user) {
+            // Tạo mật khẩu mới ngẫu nhiên (8 ký tự)
+            $newPass = substr(md5(time()), 0, 8);
+
+            // Mã hóa mật khẩu
+            $hashed = password_hash($newPass, PASSWORD_DEFAULT);
+
+            // Cập nhật mật khẩu mới
+            $sqlUpdate = "UPDATE user SET password=? WHERE email=?";
+            $ok = executeSQL($sqlUpdate, [$hashed, $email], "ss");
+
+            if ($ok) {
+                $message = "✅ Mật khẩu mới của bạn đã được tạo thành công!";
+            } else {
+                $message = "❌ Có lỗi khi cập nhật mật khẩu.";
+            }
+        } else {
+            $message = "⚠️ Email không tồn tại trong hệ thống!";
+        }
     }
 }
 ?>
