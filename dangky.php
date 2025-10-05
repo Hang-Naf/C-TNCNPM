@@ -127,6 +127,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         .options label {
+            margin-left: 50px;
             margin-right: 20px;
         }
 
@@ -218,9 +219,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <input type="email" name="email" placeholder="Email">
                     </div>
                     <div class="form-group">
-                        <input type="text" name="sdt" placeholder="Số điện thoại">
-                    </div>
-                    <div class="form-group">
                         <input type="password" name="password" placeholder="Mật khẩu">
                     </div>
                     <div class="form-group">
@@ -242,19 +240,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <script>
         // JS để hiển thị thêm input khi chọn vai trò
-        const roleRadios = document.querySelectorAll('input[name="role"]');
-        const extraField = document.getElementById('extra-field');
+        // const roleRadios = document.querySelectorAll('input[name="role"]');
+        // const extraField = document.getElementById('extra-field');
 
-        roleRadios.forEach(radio => {
-            radio.addEventListener('change', () => {
-                extraField.innerHTML = '';
-                if (radio.value === 'HocSinh') {
-                    extraField.innerHTML = '<input type="text" name="lop" placeholder="Lớp">';
-                } else if (radio.value === 'GiaoVien') {
-                    extraField.innerHTML = '<input type="text" name="boMon" placeholder="Bộ môn">';
-                }
-            });
-        });
+        // roleRadios.forEach(radio => {
+        //     radio.addEventListener('change', () => {
+        //         extraField.innerHTML = '';
+        //         if (radio.value === 'HocSinh') {
+        //             extraField.innerHTML = '<input type="text" name="lop" placeholder="Lớp">';
+        //         } else if (radio.value === 'GiaoVien') {
+        //             extraField.innerHTML = '<input type="text" name="boMon" placeholder="Bộ môn">';
+        //         }
+        //     });
+        // });
     </script>
 </body>
 
