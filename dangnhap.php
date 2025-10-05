@@ -14,6 +14,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (empty($email) || empty($password)) {
         $message = "⚠️ Vui lòng nhập đầy đủ Email và Mật khẩu!";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $message = "⚠️ Email không hợp lệ!";
+    } elseif (strlen($email) > 254) {
+        $message = "⚠️ Email không đúng định dạng";
+    } elseif (strlen($password) > 64) {
+        $message = "⚠️ Mật khẩu không đúng định dạng";
     } else {
         if (loginUser($email, $password)) {
             // ✅ Đăng nhập thành công
