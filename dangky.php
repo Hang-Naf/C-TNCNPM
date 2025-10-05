@@ -19,8 +19,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $message = "⚠️ Vui lòng nhập đầy đủ thông tin!";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $message = "⚠️ Email không hợp lệ!";
+    } elseif (strlen($email) > 254) {
+        $message = "⚠️ Email không đúng định dạng";
     } elseif (strlen($password) < 8) {
         $message = "⚠️ Mật khẩu phải chứa ít nhất 8 ký tự!";
+    } elseif (strlen($password) > 64) {
+        $message = "⚠️ Mật khẩu không đúng định dạng!";
     } elseif ($password !== $confirm) {
         $message = "⚠️ Mật khẩu nhập lại không khớp!";
     } else {
