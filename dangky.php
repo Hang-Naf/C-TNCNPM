@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $message = "⚠️ Vui lòng nhập đầy đủ thông tin!";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $message = "⚠️ Email không hợp lệ!";
-    }  elseif (strlen($password) < 8) {
+    } elseif (strlen($password) < 8) {
         $message = "⚠️ Mật khẩu phải chứa ít nhất 8 ký tự!";
     } elseif ($password !== $confirm) {
         $message = "⚠️ Mật khẩu nhập lại không khớp!";
@@ -87,6 +87,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             justify-content: center;
             align-items: center;
             height: 100vh;
+            overflow-x: hidden;
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .slide-in-left {
+            opacity: 0;
+            transform: translateX(100px);
+            animation: slideInLeft 1s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .container {
@@ -234,7 +272,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h2>Welcome Back!</h2>
             <b style="font-size: 24px;">Bạn đã có tài khoản?</b>
             <br>
-            <button class="btn-outline" style="font-size: 24px;" onclick="window.location.href='dangnhap.php'"><b>Đăng Nhập</b></button>
+            <button class="btn-outline" id="btnDangNhap" style="font-size: 24px;"><b>Đăng Nhập</b></button>
+
+            <script>
+                document.getElementById("btnDangNhap").addEventListener("click", function() {
+                    document.body.classList.add("slide-out-right");
+                    setTimeout(() => {
+                        window.location.href = "dangnhap.php";
+                    }, 600);
+                });
+            </script>
+
         </div>
     </div>
 
@@ -254,6 +302,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         //     });
         // });
     </script>
+    <script>
+        window.addEventListener("load", () => {
+            // Khi trang tải xong, thêm class hiệu ứng cho 2 khối
+            const left = document.querySelector(".left");
+            const right = document.querySelector(".right");
+
+            if (left) left.classList.add("fade-in");
+            if (right) right.classList.add("slide-in-left");
+        });
+    </script>
+
 </body>
+<!-- <script>
+    document.body.style.transform = "translateX(100%)";
+    window.addEventListener("load", () => {
+        document.body.style.transition = "transform 0.6s ease-in-out";
+        document.body.style.transform = "translateX(0)";
+    });
+</script> -->
 
 </html>
