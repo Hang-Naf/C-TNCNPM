@@ -131,6 +131,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
 
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 4px;
+            display: block;
+        }
+
         .container {
             display: flex;
             width: 100%;
@@ -247,26 +254,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="left-container">
                 <h2>Đăng Ký</h2>
                 <?php if (!empty($message)) echo "<div class='message'>$message</div>"; ?>
-                <form method="POST">
+                <form id="registerForm" method="POST" novalidate>
                     <div class="options">
                         Đăng ký dành cho:
                         <label><input type="radio" name="role" value="GiaoVien"> Giáo viên</label>
                         <label><input type="radio" name="role" value="HocSinh" checked> Học sinh</label>
-                        <!-- <label><input type="radio" name="role" value="Admin"> Admin</label> -->
                     </div>
+
                     <div class="form-group">
                         <input type="text" name="username" placeholder="Họ tên">
+                        <small class="error"></small>
                     </div>
+
                     <div class="form-group">
                         <input type="email" name="email" placeholder="Email">
+                        <small class="error"></small>
                     </div>
+
                     <div class="form-group">
                         <input type="password" name="password" placeholder="Mật khẩu">
+                        <small class="error"></small>
                     </div>
+
                     <div class="form-group">
                         <input type="password" name="confirm" placeholder="Nhập lại mật khẩu">
+                        <small class="error"></small>
                     </div>
+
                     <div class="form-group" id="extra-field"></div>
+
                     <button type="submit" class="btn btn-primary">Đăng Ký</button>
                 </form>
             </div>
@@ -318,12 +334,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </script>
 
 </body>
-<!-- <script>
-    document.body.style.transform = "translateX(100%)";
-    window.addEventListener("load", () => {
-        document.body.style.transition = "transform 0.6s ease-in-out";
-        document.body.style.transform = "translateX(0)";
+<script>
+    document.getElementById("registerForm").addEventListener("submit", function(e) {
+        let valid = true;
+        const fields = {
+            username: "Họ tên",
+            email: "Email",
+            password: "Mật khẩu",
+            confirm: "Nhập lại mật khẩu"
+        };
+
+        // Xóa lỗi cũ
+        document.querySelectorAll(".error").forEach(el => el.textContent = "");
+
+        // Lặp qua từng trường để kiểm tra
+        for (const [name, label] of Object.entries(fields)) {
+            const input = document.querySelector(`[name="${name}"]`);
+            const error = input.nextElementSibling;
+            const value = input.value.trim();
+
+            if (!value) {
+                error.textContent = `⚠️ Vui lòng nhập ${label}`;
+                valid = false;
+            } else if (name === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                error.textContent = `⚠️ Email không hợp lệ`;
+                valid = false;
+            } else if (name === "password" && value.length < 8) {
+                error.textContent = `⚠️ Mật khẩu phải chứa ít nhất 8 ký tự`;
+                valid = false;
+            } else if (name === "confirm" && value !== document.querySelector('[name="password"]').value) {
+                error.textContent = `⚠️ Mật khẩu nhập lại không khớp`;
+                valid = false;
+            }
+        }
+
+        if (!valid) e.preventDefault(); // Ngăn submit nếu có lỗi
     });
-</script> -->
+</script>
 
 </html>
