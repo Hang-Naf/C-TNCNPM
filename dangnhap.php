@@ -50,6 +50,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             justify-content: center;
             align-items: center;
             height: 100vh;
+            overflow-x: hidden;
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .slide-in-left {
+            opacity: 0;
+            transform: translateX(100px);
+            animation: slideInLeft 1s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .container {
@@ -172,7 +210,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="left">
             <h2 style="font-size: 48px;">Hello, Welcome!</h2>
             <p style="font-size: 24px;">Bạn chưa có tài khoản?</p>
-            <button class="btn-outline" onclick="window.location.href='dangky.php'">Đăng Ký</button>
+            <button class="btn-outline" id="btnDangKy">Đăng Ký</button>
+
+            <script>
+                document.getElementById("btnDangKy").addEventListener("click", function() {
+                    document.body.classList.add("slide-out-left");
+                    setTimeout(() => {
+                        window.location.href = "dangky.php";
+                    }, 600);
+                });
+            </script>
+
         </div>
 
         <!-- Bên phải -->
@@ -193,6 +241,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </div>
+
+    <script>
+        window.addEventListener("load", () => {
+            // Khi trang tải xong, thêm class hiệu ứng cho 2 khối
+            const left = document.querySelector(".left");
+            const right = document.querySelector(".right");
+
+            if (right) right.classList.add("fade-in");
+            if (left) left.classList.add("slide-in-left");
+        });
+    </script>
+
 </body>
 
 </html>
