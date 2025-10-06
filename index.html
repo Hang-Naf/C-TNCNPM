@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hệ thống quản lý - Viện đào tạo ABC</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="sidebar.css">
+    <link rel="stylesheet" href="content.css">
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <i class="fa-solid fa-graduation-cap logo"></i>
+            <h2>Viện đào tạo ABC</h2>
+        </div>
+
+        <nav class="menu">
+            <div class="menu-section">
+                <div class="menu-title">Quản lý chung</div>
+                <ul>
+                    <li class="active" data-page="dashboard"><i class="fa-solid fa-house"></i> Dashboard</li>
+                    <li data-page="giaovien"><i class="fa-solid fa-chalkboard-user"></i> Giáo viên</li>
+                    <li data-page="hocsinh"><i class="fa-solid fa-user-graduate"></i> Học sinh</li>
+                    <li data-page="lophoc"><i class="fa-solid fa-school"></i> Lớp học</li>
+                </ul>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Quản lý dữ liệu</div>
+                <ul>
+                    <li><i class="fa-solid fa-book"></i> Môn học</li>
+                    <li><i class="fa-solid fa-file-lines"></i> Tài liệu</li>
+                </ul>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Quản lý đánh giá</div>
+                <ul>
+                    <li><i class="fa-solid fa-check"></i> Chuyên cần</li>
+                    <li><i class="fa-solid fa-clipboard-list"></i> Điểm số</li>
+                </ul>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Quản lý thông tin</div>
+                <ul>
+                    <li><i class="fa-solid fa-bell"></i> Thông báo</li>
+                    <li><i class="fa-solid fa-calendar-days"></i> Sự kiện</li>
+                </ul>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Quản lý tài khoản</div>
+                <ul>
+                    <li><i class="fa-solid fa-users"></i> Danh sách tài khoản</li>
+                    <li><i class="fa-solid fa-user-shield"></i> Phân quyền</li>
+                </ul>
+            </div>
+        </nav>
+    </aside>
+
+    <div class="main-content">
+        <header class="header">
+            <div class="left">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Tìm kiếm...">
+                </div>
+            </div>
+
+            <div class="right">
+                <i class="fa-regular fa-bell"></i>
+                <div class="user-info">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Quản trị viên</span>
+                    <i class="fa-solid fa-angle-down"></i>
+                </div>
+            </div>
+        </header>
+
+        <main class="content">
+            <div id="content-area"></div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const menuItems = document.querySelectorAll(".menu ul li");
+            const contentArea = document.getElementById("content-area");
+            function loadPage(page) {
+                fetch(`pages/${page}.html`)
+                    .then(res => {
+                        if (!res.ok) throw new Error(`Không tìm thấy file pages/${page}.html`);
+                        return res.text();
+                    })
+                    .then(html => {
+                        contentArea.innerHTML = html;
+                    })
+                    .catch(err => {
+                        contentArea.innerHTML = `<p style="color:red;">${err.message}</p>`;
+                    });
+            }
+            menuItems.forEach(item => {
+                item.addEventListener("click", () => {
+                    menuItems.forEach(i => i.classList.remove("active"));
+                    item.classList.add("active");
+
+                    const page = item.getAttribute("data-page");
+                    if (page) loadPage(page);
+                });
+            });
+            loadPage("dashboard");
+        });
+
+    </script>
+</body>
+
+</html>
